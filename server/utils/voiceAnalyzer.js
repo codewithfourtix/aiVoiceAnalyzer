@@ -8,6 +8,9 @@ export const analyzeVoiceFile = async (audioBuffer) => {
     console.log('Simulating processing delay of', delay, 'ms');
     await new Promise(resolve => setTimeout(resolve, delay));
 
+    // Simulate audio duration based on the delay, or a reasonable range
+    const durationSeconds = Math.max(5, Math.floor(delay / 1000) + Math.floor(Math.random() * 10)); // Ensure at least 5 seconds, up to delay + 10 seconds
+
     // Randomly simulate errors (1% chance - reduced for better testing experience)
     if (Math.random() < 0.01) {
       console.log('Simulating random error condition');
@@ -99,6 +102,7 @@ export const analyzeVoiceFile = async (audioBuffer) => {
       volume: speechDetected ? { category: volumeCategory, description: volumeDescription } : { category: "unclear", description: "Speech not clearly detected, so volume could not be analyzed." },
       confidence,
       speechDetected,
+      durationSeconds,
     };
 
     console.log('Analysis complete. Result:', result);

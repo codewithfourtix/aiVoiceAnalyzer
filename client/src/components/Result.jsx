@@ -1,3 +1,7 @@
+import React from 'react';
+import PaceChart from './PaceChart';
+import OverallPerformanceChart from './OverallPerformanceChart';
+
 function Result({ result, isAnalyzing, error }) {
   if (error) {
     return (
@@ -148,25 +152,6 @@ function Result({ result, isAnalyzing, error }) {
     );
   };
 
-  // Generate pace data for the graph
-  const generatePaceData = () => {
-    // Mock data points for the pace graph (in a real app, this would come from the analysis)
-    // Use result.pace.category for the baseWPM calculation
-    const baseWPM =
-      result.pace.category === "high"
-        ? 170
-        : result.pace.category === "medium"
-        ? 150
-        : 130;
-
-    return [
-      { time: "0-10s", wpm: baseWPM - 10 + Math.random() * 20 },
-      { time: "10-20s", wpm: baseWPM - 5 + Math.random() * 30 },
-      { time: "20-30s", wpm: baseWPM + Math.random() * 20 },
-      { time: "30-40s", wpm: baseWPM - 15 + Math.random() * 25 },
-    ];
-  };
-
   return (
     <div className="card">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">
@@ -196,28 +181,7 @@ function Result({ result, isAnalyzing, error }) {
 
           {/* Pace Graph */}
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="flex items-end h-32 space-x-2">
-              {generatePaceData().map((point, index) => {
-                const height = (point.wpm / 200) * 100; // Scale to percentage of max height
-                return (
-                  <div
-                    key={index}
-                    className="flex flex-col items-center flex-1"
-                  >
-                    <div
-                      className="w-full bg-blue-500 rounded-t"
-                      style={{ height: `${height}%` }}
-                    ></div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {point.time}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="flex justify-between mt-2">
-              <div className="text-xs text-gray-500">Words Per Minute</div>
-            </div>
+            <PaceChart paceCategory={result.pace.category} durationSeconds={result.durationSeconds} />
           </div>
         </div>
 
@@ -250,6 +214,11 @@ function Result({ result, isAnalyzing, error }) {
               {getScoreEmoji(result.volume.category)}
             </span>
           </div>
+        </div>
+
+        {/* Overall Performance Chart */}
+        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-6">
+          <OverallPerformanceChart userConfidence={result.confidence} />
         </div>
 
         {/* AI Coach Feedback (Roast) */}
