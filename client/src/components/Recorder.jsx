@@ -92,10 +92,9 @@ function Recorder({
       onAnalysisComplete(result);
     } catch (error) {
       console.error("Error analyzing voice:", error);
-      onAnalysisError(new Error("Voice analysis failed. Please try again."));    }
+      onAnalysisError(new Error("Voice analysis failed. Please try again."));
+    }
   };
-
-
 
   const handleReset = () => {
     setAudioBlob(null);

@@ -1,73 +1,83 @@
 import { useState } from "react";
 import Recorder from "./Recorder";
 import Result from "./Result";
+import ReportGenrator from "./ReportGenrator";
 
 const VoiceAnalyzer = () => {
-  const [analysisResult, setAnalysisResult] = useState(null);
+  const [result, setResult] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState(null);
-
-  const handleAnalysisComplete = (result) => {
-    setAnalysisResult(result);
-    setIsAnalyzing(false);
-    setError(null);
-  };
-
-  const handleAnalysisError = (error) => {
-    setError(error);
-    setIsAnalyzing(false);
-    setAnalysisResult(null);
-  };
+  const [recordingTime, setRecordingTime] = useState(0);
 
   const handleAnalysisStart = () => {
     setIsAnalyzing(true);
-    setAnalysisResult(null);
     setError(null);
   };
 
-  const handleReset = () => {
-    setAnalysisResult(null);
+  const handleAnalysisComplete = (analysisResult) => {
+    setResult(analysisResult);
     setIsAnalyzing(false);
     setError(null);
   };
 
+  const handleAnalysisError = (analysisError) => {
+    setError(analysisError);
+    setIsAnalyzing(false);
+  };
+
+  const handleReset = () => {
+    setResult(null);
+    setError(null);
+    setRecordingTime(0);
+  };
+
   return (
-    <section
-      id="analyzer"
-      className="py-20 px-4 bg-gradient-to-br from-purple-900/5 to-blue-900/5"
-    >
-      <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-            Voice Analyzer
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Record your voice and get instant AI-powered analysis with detailed
-            insights and personalized feedback
+    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+            Voice Analysis AI
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Record your voice and get instant AI-powered analysis of your
+            speaking patterns, pace, pitch, and confidence levels
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          <div className="order-2 lg:order-1">
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Recorder */}
+          <div>
             <Recorder
               onAnalysisStart={handleAnalysisStart}
               onAnalysisComplete={handleAnalysisComplete}
               onAnalysisError={handleAnalysisError}
               onReset={handleReset}
               isAnalyzing={isAnalyzing}
+              onRecordingTimeUpdate={setRecordingTime}
             />
           </div>
 
-          <div className="order-1 lg:order-2">
-            <Result
-              result={analysisResult}
-              isAnalyzing={isAnalyzing}
-              error={error}
-            />
+          {/* Results */}
+          <div>
+            <Result result={result} isAnalyzing={isAnalyzing} error={error} />
           </div>
         </div>
+
+        {/* Report Generator - Appears below when results are available */}
+        {result && !isAnalyzing && !error && (
+          <div className="max-w-4xl mx-auto">
+            <ReportGenrator result={result} recordingTime={recordingTime} />
+          </div>
+        )}
+
+        {/* Footer */}
+        <div className="text-center mt-16 text-gray-500">
+          <p>Powered by advanced AI voice analysis technology</p>
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
 
