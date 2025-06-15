@@ -1,5 +1,5 @@
-import React from 'react';
-import { Line } from 'react-chartjs-2';
+import React from "react";
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,7 +9,8 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
+  Filler,
+} from "chart.js";
 
 ChartJS.register(
   CategoryScale,
@@ -18,28 +19,37 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 );
 
 const OverallPerformanceChart = ({ userConfidence }) => {
   const data = {
-    labels: ['Confidence Level'],
+    labels: ["Confidence Level"],
     datasets: [
       {
-        label: 'Your Confidence',
+        label: "Your Confidence",
         data: [userConfidence],
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: "rgba(139, 92, 246, 1)",
+        backgroundColor: "rgba(139, 92, 246, 0.1)",
         fill: true,
-        tension: 0.1,
+        tension: 0.4,
+        pointBackgroundColor: "rgba(139, 92, 246, 1)",
+        pointBorderColor: "white",
+        pointBorderWidth: 3,
+        pointRadius: 8,
       },
       {
-        label: 'Average Confidence',
-        data: [70], // Example average confidence level
-        borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        label: "Average Confidence",
+        data: [70],
+        borderColor: "rgba(59, 130, 246, 1)",
+        backgroundColor: "rgba(59, 130, 246, 0.1)",
         fill: true,
-        tension: 0.1,
+        tension: 0.4,
+        pointBackgroundColor: "rgba(59, 130, 246, 1)",
+        pointBorderColor: "white",
+        pointBorderWidth: 3,
+        pointRadius: 8,
       },
     ],
   };
@@ -49,31 +59,44 @@ const OverallPerformanceChart = ({ userConfidence }) => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
+        labels: {
+          usePointStyle: true,
+          padding: 20,
+          font: {
+            weight: "bold",
+          },
+        },
       },
       title: {
         display: true,
-        text: 'Overall Performance: Confidence Level',
+        text: "Overall Performance: Confidence Level",
+        font: {
+          size: 16,
+          weight: "bold",
+        },
+        color: "#374151",
       },
       tooltip: {
+        backgroundColor: "rgba(139, 92, 246, 0.9)",
+        titleColor: "white",
+        bodyColor: "white",
+        borderColor: "rgba(139, 92, 246, 1)",
+        borderWidth: 1,
         callbacks: {
-          label: function(context) {
-            let label = context.dataset.label || '';
-            if (label) {
-              label += ': ';
-            }
-            if (context.parsed.y !== null) {
-              label += context.parsed.y + '%';
-            }
-            return label;
-          }
-        }
-      }
+          label: function (context) {
+            return `${context.dataset.label}: ${context.parsed.y}%`;
+          },
+        },
+      },
     },
     scales: {
       x: {
         grid: {
           display: false,
+        },
+        ticks: {
+          color: "#6B7280",
         },
       },
       y: {
@@ -81,14 +104,24 @@ const OverallPerformanceChart = ({ userConfidence }) => {
         max: 100,
         title: {
           display: true,
-          text: 'Confidence (%)',
+          text: "Confidence (%)",
+          color: "#6B7280",
+          font: {
+            weight: "bold",
+          },
+        },
+        ticks: {
+          color: "#6B7280",
+        },
+        grid: {
+          color: "rgba(107, 114, 128, 0.1)",
         },
       },
     },
   };
 
   return (
-    <div className="h-48 w-full">
+    <div className="h-64 w-full">
       <Line data={data} options={options} />
     </div>
   );
